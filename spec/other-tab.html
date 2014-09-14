@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title></title>
+</head>
+<body>
+  <script src="/base/local-storage-emitter.js"></script>
+  <script>
+    window.onload = function () {
+      var emitter = new LocalStorageEmitter();
+
+      console.log('listening to ping');
+
+      emitter.on('ping', function () {
+        console.log('ping received!');
+        emitter.emit('pong');
+      });
+
+      parent.iframe_loaded = true;
+    }
+  </script>
+</body>
+</html>
