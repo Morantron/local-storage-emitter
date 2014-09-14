@@ -125,7 +125,7 @@
    * @param {String} eventName
    */
   LocalStorageEmitter.prototype.listeners = function (eventName) {
-    return this._events[eventName];
+    return this._events[this._getEventName(eventName)];
   };
 
   /**

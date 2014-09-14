@@ -63,3 +63,96 @@ describe('once', function () {
     }, 1);
   });
 });
+
+describe('setMaxListeners', function () {
+  it('sets the maxListeners var in the configuration object of the emitter', function () {
+    emitter.conf.maxListeners.should.equal(0);
+    emitter.setMaxListeners(20);
+    emitter.conf.maxListeners.should.equal(20);
+  });
+});
+
+describe('listeners', function () {
+  it('returns and array of callback functions', function () {
+    var a = function () { console.log('a');}
+      , b = function () { console.log('b');}
+      , c = function () { console.log('c');};
+
+    expect(emitter.listeners('pong')).to.deep.equal(undefined);
+
+    emitter.on('pong', a);
+    emitter.on('pong', b);
+    emitter.on('pong', c);
+
+    expect(emitter.listeners('pong')).to.deep.equal([a, b, c]);
+  });
+});
+
+describe('removeAllListeners', function () {
+  it('removes all listeners from an specified event', function () {
+    var a = function () { console.log('a');}
+      , b = function () { console.log('b');}
+      , c = function () { console.log('c');};
+
+
+    emitter.on('pong', a);
+    emitter.on('pong', b);
+    emitter.on('pong', c);
+
+    expect(emitter.listeners('pong')).to.deep.equal([a, b, c]);
+
+    emitter.removeAllListeners('pong');
+
+    expect(emitter.listeners('pong')).to.deep.equal(undefined);
+  });
+
+  it('returns an emitter', function () {
+    var a = function () { console.log('a');}
+      , b = function () { console.log('b');}
+      , c = function () { console.log('c');};
+
+    emitter.on('pong', a);
+    emitter.on('pong', b);
+    emitter.on('pong', c);
+
+    expect(emitter.listeners('pong')).to.deep.equal([a, b, c]);
+
+    expect(emitter.off('pong', b)).to.be.instanceof(LocalStorageEmitter);
+    expect(emitter.off('pong', b)).to.equal(emitter);
+  });
+});
+
+describe('off', function () {
+  it('removes an specified callback from an event', function () {
+    var a = function () { console.log('a');}
+      , b = function () { console.log('b');}
+      , c = function () { console.log('c');};
+
+    emitter.on('pong', a);
+    emitter.on('pong', b);
+    emitter.on('pong', c);
+
+    expect(emitter.listeners('pong')).to.deep.equal([a, b, c]);
+
+    emitter.off('pong', b);
+
+    expect(emitter.listeners('pong')).to.deep.equal([a, c]);
+  });
+
+  it('returns an emitter', function () {
+    var a = function () { console.log('a');}
+      , b = function () { console.log('b');}
+      , c = function () { console.log('c');};
+
+    emitter.on('pong', a);
+    emitter.on('pong', b);
+    emitter.on('pong', c);
+
+    expect(emitter.listeners('pong')).to.deep.equal([a, b, c]);
+
+    expect(emitter.off('pong', b)).to.be.instanceof(LocalStorageEmitter);
+    expect(emitter.off('pong', b)).to.equal(emitter);
+  });
+
+  //TODO specs for on and emit
+});
