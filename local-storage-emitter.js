@@ -113,8 +113,10 @@
 
     wrapCallback = function () {
       callback.apply(self, arguments);
-      self.off(eventName, callback);
+      self.off(eventName, wrapCallback);
     };
+
+    self.on(eventName, wrapCallback);
   };
 
   /**

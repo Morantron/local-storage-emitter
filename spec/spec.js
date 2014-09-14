@@ -18,6 +18,10 @@ before(function () {
   emitter = new LocalStorageEmitter();
 });
 
+afterEach( function () {
+  emitter.removeAllListeners('pong');
+});
+
 describe('Communication with other tab', function () {
   it('waits for the iframe to load', function (done) {
     // wait a little bit for the iframe to load
@@ -35,7 +39,27 @@ describe('Communication with other tab', function () {
       done();
     });
 
-    console.log('emitting ping');
     emitter.emit('ping');
+  });
+});
+
+describe('once', function () {
+  it('should not respond to the same event more than once', function (done) {
+    var count = 0;
+
+    emitter.once('pong', function () {
+      count++;
+    });
+
+    emitter.emit('ping');
+    emitter.emit('ping');
+    emitter.emit('ping');
+    emitter.emit('ping');
+    emitter.emit('ping');
+
+    window.setTimeout(function () {
+      count.should.equal(1);
+      done();
+    }, 1);
   });
 });
