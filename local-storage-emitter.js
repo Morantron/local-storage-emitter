@@ -15,6 +15,9 @@
   }
 }(this, function () {
 
+  /**
+   * LocalStorageEmitter constructor
+   */
   function LocalStorageEmitter() {
     this._events = {};
     this.conf = {
@@ -26,7 +29,11 @@
   LocalStorageEmitter.prototype.namespace = '__local_storage_emitter__';
 
   /**
-   * prototype._onStorage
+   * On storage event callback. Looks up the event in the internal _events
+   * hash, parses the arguments received in the packet and calls all set up
+   * callbacks.
+   *
+   * @param {Event}
    */
   LocalStorageEmitter.prototype._onStorage = function (event) {
     var callbacks = this._events[event.key];
@@ -39,28 +46,35 @@
   };
 
   /**
-   * prototype._parsePacket
+   * Parses a packet from from localStorage
+   *
+   * @param {String} key
    */
   LocalStorageEmitter.prototype._parsePacket = function (key) {
     return JSON.parse(window.localStorage.getItem(key));
   };
 
   /**
-   * prototype._getEventName
+   * Gets the event name prepended by a emitter namespace.
    */
   LocalStorageEmitter.prototype._getEventName = function (eventName) {
     return this.namespace + eventName;
   };
 
   /**
-   * prototype._getUniqueString
+   * Returns a unique string. Used to force change events in localStorage
+   *
+   * @return {String}
    */
   LocalStorageEmitter.prototype._getUniqueString = function () {
     return [] + (new Date()).getTime() + Math.random();
   };
 
   /**
-   * prototype._buildPacket
+   * Builds a packet to be sent through LocalStorage
+   *
+   * @param {Array} args
+   * @return {String} packet
    */
   LocalStorageEmitter.prototype._buildPacket = function (args) {
     args = Array.prototype.slice.call(args);
@@ -73,7 +87,7 @@
   };
 
   /**
-   * Prototype.sets max listeners
+   * Sets the maximum amount of listeners for event name
    *
    * @param {Number} max
    */
@@ -82,7 +96,10 @@
   };
 
   /**
-   * prototype.on
+   * Adds a listener
+   *
+   * @param {String} eventName
+   * @param {Function} callback
    */
   LocalStorageEmitter.prototype.on = function (eventName, callback) {
     var eventKey = this._getEventName(eventName)
@@ -105,7 +122,10 @@
   };
 
   /**
-   * prototype.on
+   * Adds a listener that will be invoked only once
+   *
+   * @param {String} eventName
+   * @param {Function} callback
    */
   LocalStorageEmitter.prototype.once = function (eventName, callback) {
     var self = this
@@ -123,6 +143,7 @@
    * Prototype.listeners
    *
    * @param {String} eventName
+   * @return {Array<Function>} callbacks
    */
   LocalStorageEmitter.prototype.listeners = function (eventName) {
     return this._events[this._getEventName(eventName)];
@@ -132,6 +153,7 @@
    * Prototype.removes all listeners
    *
    * @param {String} eventName
+   * @return {LocalStorageEmitter} emitter
    */
   LocalStorageEmitter.prototype.removeAllListeners = function (eventName) {
     delete this._events[this._getEventName(eventName)];
@@ -140,7 +162,10 @@
   };
 
   /**
-   * prototype.off
+   * Removes listener from emitter
+   *
+   * @param {String} eventName
+   * @param {Function} callback
    */
   LocalStorageEmitter.prototype.off = function (eventName, callback) {
     var i = this._events[this._getEventName(eventName)].indexOf(callback);
@@ -152,8 +177,12 @@
     return this;
   };
 
+  LocalStorageEmitter.prototype.removeListener = LocalStorageEmitter.prototype.off;
+
   /**
-   * prototype.emit
+   * Emits event through localStorage
+   *
+   * @param {String} eventName
    */
   LocalStorageEmitter.prototype.emit = function (eventName) {
     window.localStorage.setItem(this._getEventName(eventName), this._buildPacket(arguments));
