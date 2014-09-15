@@ -1,6 +1,6 @@
 {
   "name": "local-storage-emitter",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Emit events through local storage following the EventEmitter API.",
   "main": "local-storage-emitter.js",
   "scripts": {
